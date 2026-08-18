@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-brand-rust: #a64d2e;
+  --color-brand-ink: #111111;
+  --color-brand-sand: #f5f3ef;
+  
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background-color: #ffffff;
+  color: var(--color-brand-ink);
+}
+
+::selection {
+  background-color: var(--color-brand-rust);
+  color: #ffffff;
+}
+
+/* Optional: smooth scroll for the page */
+html {
+  scroll-behavior: smooth;
+}
