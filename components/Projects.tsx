@@ -1,78 +1,77 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
-import { projects } from "../data/projects";
-import { FolderGit2 } from "lucide-react";
+import { IBM_Plex_Mono } from "next/font/google";
+import { ArrowUpRight } from "lucide-react";
+import projectsData from "../data/projects.json";
+
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export function Projects() {
   return (
-    <section id="projects" className="w-full px-6 md:px-12 max-w-7xl mx-auto z-10 py-24 border-t border-zinc-100">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 md:mb-24 gap-6">
-        <div>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-5xl font-serif tracking-tight text-brand-ink mb-4"
-          >
-            System <span className="italic font-light text-zinc-400">Implementations</span>
-          </motion.h2>
-          <motion.p
-             initial={{ opacity: 0, y: 10 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true, margin: "-100px" }}
-             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-             className="text-zinc-500 font-light max-w-lg"
-          >
-            Exploring concurrent execution, queues, and scalable patterns.
-          </motion.p>
+    <section id="projects" className={`${mono.className} w-full bg-[#121210] text-[#EDE7D8] px-6 py-24 sm:py-32 border-t-2 border-[#2A2A22]`}>
+      <div className="mx-auto max-w-[1000px]">
+        <div className="mb-16">
+          <h2 className="text-[2rem] sm:text-[3rem] font-bold tracking-tight mb-4 text-[#EDE7D8]">
+            System Architectures
+          </h2>
+          <p className="text-[16px] text-[#C9C2AE] font-medium max-w-[60ch]">
+            A technical gallery of backend implementations, exploring concurrent execution, distributed queues, and scalable patterns.
+          </p>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
-        {projects.map((project, index) => (
-          <motion.div
-            key={project.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="group flex flex-col"
-          >
-            {/* Visual placeholder for the system diagram / architecture */}
-            <div className="w-full aspect-[4/3] bg-brand-sand border border-zinc-200 mb-8 p-6 flex flex-col items-center justify-center relative overflow-hidden transition-colors duration-500 group-hover:border-brand-rust/30">
-               {/* Minimal abstract representation of code/system */}
-               <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-               <FolderGit2 size={32} className="text-zinc-300 mb-4 group-hover:scale-110 group-hover:text-brand-rust transition-all duration-500" />
-               <div className="text-[10px] uppercase tracking-widest text-zinc-400 font-mono">Architecture Diagram</div>
-            </div>
-
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-brand-rust">
-                {project.category}
-              </span>
-              <div className="h-[1px] flex-1 bg-zinc-100"></div>
-            </div>
-
-            <h3 className="text-2xl font-serif text-brand-ink mb-3 group-hover:text-brand-rust transition-colors duration-300">
-              {project.title}
-            </h3>
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(320px,auto)]">
+          {projectsData.map((project, index) => {
+            // Bento Grid logic: 
+            // Index 0: span 2 cols, Index 1: span 1 col
+            // Index 2: span 1 col, Index 3: span 2 cols
+            const isWide = index === 0 || index === 3;
             
-            <p className="text-zinc-600 font-light text-sm leading-relaxed mb-6 flex-1">
-              {project.description}
-            </p>
+            return (
+              <div 
+                key={project.id} 
+                className={`group relative flex flex-col justify-between p-8 border-2 border-[#2A2A22] bg-[#161614] hover:bg-[#1A1A18] transition-colors duration-300 ${isWide ? 'md:col-span-2' : 'md:col-span-1'}`}
+              >
+                {/* Decorative background grid pattern for wide items */}
+                {isWide && (
+                  <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+                )}
 
-            <div className="flex flex-wrap gap-2 mt-auto pt-6 border-t border-zinc-100">
-              {project.techStack.map(tech => (
-                <span key={tech} className="text-[10px] uppercase tracking-widest font-mono text-zinc-500">
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-        ))}
+                <div className="relative z-10 flex justify-between items-start mb-12">
+                  <div className="flex items-center gap-3">
+                    <span className="px-3 py-1 bg-[#2A2A22] text-[#8B6BC4] text-[10px] uppercase tracking-widest font-bold">
+                      {project.category}
+                    </span>
+                  </div>
+                  <a href={`https://github.com/MohdMusaiyab/backend/tree/main/${project.directory}`} target="_blank" rel="noreferrer" className="text-[#7A7360] hover:text-[#B4482F] transition-colors">
+                    <ArrowUpRight size={20} />
+                  </a>
+                </div>
+
+                <div className="relative z-10">
+                  <h3 className="text-[24px] font-bold text-[#EDE7D8] mb-3 group-hover:text-[#8B6BC4] transition-colors">
+                    {project.title}
+                  </h3>
+                  <p className="text-[14px] leading-[1.6] text-[#C9C2AE] font-medium mb-8 max-w-[50ch]">
+                    {project.description}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {project.techStack.map(tech => (
+                      <span key={tech} className="text-[10px] uppercase tracking-[0.15em] font-semibold text-[#7A7360] border border-[#2A2A22] px-2 py-1 bg-[#121210] hover:border-[#B4482F] hover:text-[#EDE7D8] hover:scale-105 transition-all duration-300 cursor-default">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
