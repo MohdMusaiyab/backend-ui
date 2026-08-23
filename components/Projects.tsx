@@ -4,6 +4,7 @@ import React from "react";
 import { IBM_Plex_Mono } from "next/font/google";
 import { ArrowUpRight } from "lucide-react";
 import projectsData from "../data/projects.json";
+import Link from "next/link";
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -26,9 +27,6 @@ export function Projects() {
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(320px,auto)]">
           {projectsData.map((project, index) => {
-            // Bento Grid logic: 
-            // Index 0: span 2 cols, Index 1: span 1 col
-            // Index 2: span 1 col, Index 3: span 2 cols
             const isWide = index === 0 || index === 3;
             
             return (
@@ -47,15 +45,17 @@ export function Projects() {
                       {project.category}
                     </span>
                   </div>
-                  <a href={`https://github.com/MohdMusaiyab/backend/tree/main/${project.directory}`} target="_blank" rel="noreferrer" className="text-[#7A7360] hover:text-[#B4482F] transition-colors">
-                    <ArrowUpRight size={20} />
-                  </a>
+                  <Link href={`/projects/${project.id}`} className="text-[#7A7360] hover:text-[#B4482F] transition-colors">
+                    <ArrowUpRight size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </Link>
                 </div>
 
                 <div className="relative z-10">
-                  <h3 className="text-[24px] font-bold text-[#EDE7D8] mb-3 group-hover:text-[#8B6BC4] transition-colors">
-                    {project.title}
-                  </h3>
+                  <Link href={`/projects/${project.id}`}>
+                    <h3 className="text-[24px] font-bold text-[#EDE7D8] mb-3 group-hover:text-[#8B6BC4] transition-colors cursor-pointer inline-block">
+                      {project.title}
+                    </h3>
+                  </Link>
                   <p className="text-[14px] leading-[1.6] text-[#C9C2AE] font-medium mb-8 max-w-[50ch]">
                     {project.description}
                   </p>
