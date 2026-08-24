@@ -1,6 +1,7 @@
 import React from "react";
 import Hero from "@/components/Hero";
 import { Projects } from "../components/Projects";
+import { Footer } from "../components/Footer";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
       {/* Background for the rest of the page can be updated later, setting to dark for now to avoid harsh clash with hero */}
       <Hero />
       <Projects />
+      <Footer />
     </main>
   );
 }
