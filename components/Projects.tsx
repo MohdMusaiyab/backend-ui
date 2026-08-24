@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { IBM_Plex_Mono } from "next/font/google";
 import { ArrowUpRight } from "lucide-react";
 import projectsData from "../data/projects.json";
