@@ -9,11 +9,11 @@
   },
   {
     "id": "todo-backend",
-    "title": "Todo API",
-    "description": "A robust todo API serving as a foundational sandbox for practicing CRUD, RESTful routing, and structured data handling.",
+    "title": "Production Todo API",
+    "description": "A highly scalable REST API featuring robust JWT authentication, end-to-end type safety with Zod, dynamic pagination, and global error handling.",
     "directory": "todo-backend",
-    "techStack": ["Node.js", "Express", "REST"],
-    "category": "Fundamentals"
+    "techStack": ["Express v5", "Prisma", "PostgreSQL", "Zod", "Swagger"],
+    "category": "API Architecture"
   },
   {
     "id": "booking-system",
