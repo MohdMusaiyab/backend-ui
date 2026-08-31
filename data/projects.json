@@ -28,7 +28,7 @@
     "title": "Async Image Processor",
     "description": "A production-grade background worker and queue system using BullMQ, Redis, and Express to process images asynchronously without blocking the main event loop.",
     "directory": "image-processor-queue",
-    "techStack": ["Node.js", "BullMQ", "Redis", "TypeScript"],
+    "techStack": ["Node.js", "BullMQ", "Redis", "Prisma", "Sharp"],
     "category": "Distributed Queues"
   }
 ]

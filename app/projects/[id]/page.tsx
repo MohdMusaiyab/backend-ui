@@ -7,6 +7,8 @@ import { notFound } from "next/navigation";
 import { IBM_Plex_Mono } from "next/font/google";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -106,8 +108,40 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
         </header>
 
         {/* Markdown Content */}
-        <div className="prose prose-invert max-w-none prose-p:text-[#C9C2AE] prose-p:leading-relaxed prose-headings:text-[#EDE7D8] prose-a:text-[#8B6BC4] hover:prose-a:text-[#B4482F] prose-a:transition-colors prose-pre:bg-[#161614] prose-pre:border prose-pre:border-[#2A2A22] prose-code:text-[#B4482F]">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        <div className="prose prose-invert max-w-none prose-p:text-[#C9C2AE] prose-p:leading-relaxed prose-headings:text-[#EDE7D8] prose-a:text-[#8B6BC4] hover:prose-a:text-[#B4482F] prose-a:transition-colors">
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm]}
+            components={{
+              code({node, className, children, ...props}: any) {
+                const match = /language-(\w+)/.exec(className || '')
+                if (match) {
+                  return (
+                    <SyntaxHighlighter
+                      {...props}
+                      style={vscDarkPlus as any}
+                      language={match[1]}
+                      PreTag="div"
+                      customStyle={{
+                        background: "#161614",
+                        border: "1px solid #2A2A22",
+                        borderRadius: "0.375rem",
+                        padding: "1rem",
+                        margin: "1.5rem 0",
+                        fontSize: "0.9em"
+                      }}
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  )
+                }
+                return (
+                  <code {...props} className={`${className || ''} bg-[#161614] border border-[#2A2A22] px-1.5 py-0.5 rounded text-[#B4482F]`}>
+                    {children}
+                  </code>
+                )
+              }
+            }}
+          >
             {content}
           </ReactMarkdown>
         </div>

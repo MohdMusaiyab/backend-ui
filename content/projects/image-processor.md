@@ -1,36 +1,73 @@
 ---
-title: "Async Image Processor"
+title: "Async Image Processing Pipeline"
 githubUrl: "https://github.com/MohdMusaiyab/backend/tree/main/image-processor-queue"
 category: "Distributed Queues"
-techStack: ["Node.js", "BullMQ", "Redis", "TypeScript"]
+techStack: ["Node.js", "BullMQ", "Redis", "Prisma", "Sharp"]
 ---
 
 ### Abstract
-A production-grade background worker and queue system. Processing heavy tasks like image manipulation synchronously on the main thread will block Node.js and crash the server under load. This project decouples the heavy lifting by moving it to an asynchronous queue.
+This project demonstrates how to decouple heavy, CPU-intensive tasks from the main API thread. By utilizing a robust message queue architecture, the system guarantees high availability, incredibly fast API response times, and highly scalable background processing without ever blocking the Node.js event loop.
 
-### Architecture
-The system uses the Producer-Consumer pattern.
+### Core Architecture (Producer-Consumer Pattern)
+The backend is deliberately split into two completely separate processes communicating via an in-memory message broker.
 
-1. **API Server (Producer)**: Receives the image upload, saves it temporarily, and pushes a "job" to the Redis queue. It immediately responds to the user with a `202 Accepted` status.
-2. **Redis & BullMQ**: Acts as the robust message broker. BullMQ handles job retries, delays, and failure states natively.
-3. **Worker Pool (Consumer)**: A separate Node.js process listens to the queue, pulls jobs off, and performs the CPU-intensive image resizing/compression using libraries like Sharp.
+1. **Producer (Express API)**: Receives image uploads via `multer`, saves the raw file locally, creates a pending job record in PostgreSQL, and pushes the job ID to the Redis queue. It immediately returns a `202 Accepted` status to the client to keep the event loop free.
+2. **Message Broker (Redis + BullMQ)**: Acts as the highly reliable, in-memory queue. Incoming jobs wait here until a worker has the capacity to process them, handling retries and atomic operations natively.
+3. **Consumer (Background Worker)**: A standalone Node.js process that listens exclusively to the queue. It performs the heavy image transformations (resizing, grayscale, blurring) using the high-performance `sharp` library.
 
-### The Value of Decoupling
-By splitting the API and the Workers, we can scale them independently. If we receive a huge influx of images, the API won't go down; the queue will just grow. We can then spin up more Worker instances to drain the queue faster.
+### Single Source of Truth
+While Redis manages the queue execution sequence, **PostgreSQL** (managed via **Prisma 7**) acts as the persistent "Single Source of Truth" for job states. The frontend interface actively polls the API to check the database status, seamlessly rendering the image once the background worker updates the database record to `completed`.
+
+### Implementation Details: The Consumer Worker
+Below is the core implementation of the background worker. Notice how it operates entirely independently of the API server, picking up jobs, executing the CPU-heavy `sharp` manipulation, and strictly managing the database state.
 
 ```typescript
-// Adding a job to the queue
-import { Queue } from 'bullmq';
+// worker.ts: A standalone process handling heavy background jobs
+import { Worker } from 'bullmq';
+import sharp from 'sharp';
+import path from 'path';
+import prisma from '../prisma.js';
+import { connection } from './config.js';
 
-const imageQueue = new Queue('imageProcessing', { connection: redisConnection });
-
-export async function processImageUpload(file: Express.Multer.File) {
-  // Push the heavy work to the background
-  await imageQueue.add('resize', {
-    filePath: file.path,
-    sizes: [800, 400, 200]
-  });
+// 1. The worker binds to the 'image-jobs' Redis queue
+const imageWorker = new Worker('image-jobs', async (job) => {
+  const { jobId, filePath } = job.data;
   
-  return { status: 'queued', message: 'Image is being processed' };
-}
+  // 2. Mark job as processing in PostgreSQL
+  await prisma.job.update({
+    where: { id: jobId },
+    data: { status: 'processing' }
+  });
+
+  // (Artificial delay to demonstrate background processing in UI)
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
+  const outputFilename = `processed-${jobId}.jpg`;
+  const outputPath = path.join(process.cwd(), 'processed', outputFilename);
+  
+  // 3. CPU-Intensive Image Manipulation via Sharp (libvips)
+  await sharp(filePath)
+    .resize(800)
+    .grayscale()
+    .blur(4)
+    .toFile(outputPath);
+
+  // 4. Mark completed and store the final URL
+  await prisma.job.update({
+    where: { id: jobId },
+    data: { 
+      status: 'completed',
+      imageUrl: `/processed/${outputFilename}`
+    }
+  });
+
+}, { connection: connection as any });
+
+// 5. Graceful failure handling and state recovery
+imageWorker.on('failed', async (job, err) => {
+  await prisma.job.update({
+    where: { id: job?.data.jobId },
+    data: { status: 'failed' }
+  });
+});
 ```
