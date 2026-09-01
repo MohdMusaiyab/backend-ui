@@ -1,3 +1,4 @@
+import type { Metadata, ResolvingMetadata } from "next";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
@@ -9,6 +10,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import projectsData from "../../../data/projects.json";
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -55,6 +57,38 @@ function getProject(id: string) {
   } catch (e) {
     return null;
   }
+}
+
+export async function generateMetadata(
+  props: { params: Promise<{ id: string }> },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const params = await props.params;
+  const project = getProject(params.id);
+  
+  if (!project) {
+    return {
+      title: "Project Not Found",
+    };
+  }
+
+  const { frontmatter } = project;
+  const projectMeta = projectsData.find(p => p.id === params.id);
+  const description = projectMeta?.description || `A technical deep-dive into the ${frontmatter.title} architecture.`;
+
+  return {
+    title: frontmatter.title,
+    description: description,
+    openGraph: {
+      title: frontmatter.title,
+      description: description,
+      url: `https://backend-journal.vercel.app/projects/${params.id}`,
+    },
+    twitter: {
+      title: frontmatter.title,
+      description: description,
+    },
+  };
 }
 
 export default async function ProjectPage(props: { params: Promise<{ id: string }> }) {
