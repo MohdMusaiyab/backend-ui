@@ -19,6 +19,7 @@ const mono = IBM_Plex_Mono({
 
 const GithubIcon = ({ size = 20, className }: { size?: number, className?: string }) => (
   <svg
+    aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg"
     width={size}
     height={size}
@@ -100,9 +101,29 @@ export default async function ProjectPage(props: { params: Promise<{ id: string 
   }
 
   const { frontmatter, content } = project;
+  
+  const projectMeta = projectsData.find(p => p.id === params.id);
+  const articleDescription = projectMeta?.description || `A technical deep-dive into the ${frontmatter.title} architecture.`;
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": frontmatter.title,
+    "description": articleDescription,
+    "author": {
+      "@type": "Person",
+      "name": "Mohd Musaiyab"
+    },
+    "about": frontmatter.category,
+    "url": `https://backend-journal.vercel.app/projects/${params.id}`
+  };
 
   return (
     <main className={`${mono.className} min-h-screen bg-[#121210] text-[#EDE7D8] px-6 py-24 sm:py-32 selection:bg-[#B4482F] selection:text-white`}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <article className="mx-auto max-w-[800px] w-full">
         {/* Navigation */}
         <div className="mb-16">

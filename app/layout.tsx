@@ -51,12 +51,29 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Mohd Musaiyab",
+    "url": "https://itsmusaiyab.in",
+    "jobTitle": "Backend Engineer",
+    "sameAs": [
+      "https://github.com/MohdMusaiyab",
+      "https://x.com/mohd_musaiyab",
+      "https://www.linkedin.com/in/mohd-musaiyab/"
+    ]
+  };
+
   return (
     <html
       lang="en"
       className={`${inter.variable} ${playfair.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-white text-zinc-900 font-sans">
+      <body className="min-h-full flex flex-col bg-[#121210] text-[#EDE7D8] font-sans">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        />
         {children}
       </body>
     </html>
