@@ -6,6 +6,14 @@ Instead of a standard "about me" website, I wanted a place to properly document 
 
 You can check out the live site here: https://backend-journal.vercel.app <img width="1805" height="861" alt="image" src="https://github.com/user-attachments/assets/8cad5b38-76a6-41c3-9684-5221fde9afd0" />
 
+## 🧠 The Core Backend Source Code
+
+**⚠️ IMPORTANT:** This repository only contains the frontend presentation and Markdown documentation. 
+
+If you are looking for the actual **Go, Node.js, and Distributed Systems source code**, all of the complex architectures showcased on this site are hosted in my main backend monorepo:
+
+👉 **[github.com/MohdMusaiyab/backend](https://github.com/MohdMusaiyab/backend)**
+
 ## 🛠️ The Tech Stack
 
 This isn't just a basic React template; it's engineered with production-grade best practices:
