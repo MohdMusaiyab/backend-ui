@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Backend Architecture Gallery 🚀
 
-## Getting Started
+Hey there! Welcome to the source code of my **Backend Architecture Portfolio**.
 
-First, run the development server:
+Instead of a standard "about me" website, I wanted a place to properly document the systems I build. This is a statically generated, highly-optimized Next.js app designed to showcase complex backend architectures, distributed queues, and high-concurrency patterns through deep-dive engineering logs.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+You can check out the live site here: https://backend-journal.vercel.app <img width="1805" height="861" alt="image" src="https://github.com/user-attachments/assets/8cad5b38-76a6-41c3-9684-5221fde9afd0" />
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ The Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This isn't just a basic React template; it's engineered with production-grade best practices:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* **Framework**: Next.js (App Router)
+* **Styling**: Tailwind CSS with custom multi-theme sections (Gruvbox Dark/Light)
+* **Content Engine**: Native Markdown (`react-markdown` + `remark-gfm`)
+* **Syntax Highlighting**: `react-syntax-highlighter` (VS Code Dark theme)
+* **SEO & Metadata**: 100% programmatic SEO, auto-generating Sitemaps, and JSON-LD Structured Data
+* **Icons**: Programmatic JSX Favicons (`next/og`) & Lucide React
 
-## Learn More
+## 📂 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+* `/content/projects/` - This is the brain of the site. All projects are written as standard Markdown (`.md`) files. The App Router dynamically parses these into static pages.
+* `/data/projects.json` - The metadata registry that feeds the Bento Grid on the homepage.
+* `/app/projects/[id]/page.tsx` - The dynamic route that reads the Markdown, injects specific SEO tags, and renders the technical deep-dives.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started Locally
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Want to spin it up yourself? It's super lightweight.
 
-## Deploy on Vercel
+1. **Clone the repo**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   git clone https://github.com/MohdMusaiyab/backend-ui.git
+   cd backend-ui
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Run the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open http://localhost:3000 (or 3001 if the port is busy) in your browser!
+
+## ✍️ Adding a New Project
+
+Adding a new architectural log is practically effortless:
+
+1. Write your deep-dive in a new Markdown file: `content/projects/my-new-system.md`.
+2. Add the title and tech stack to the `projects.json` array.
+3. Next.js automatically generates the route, updates the homepage grid, and pushes the new route to the `sitemap.xml` for Google to index.
+
+## 🤝 Let's Connect
+
+If you're into distributed systems, Go, Node.js, or just want to chat about architecture, feel free to reach out!
+
+* **Twitter/X**: [@mohd_musaiyab](https://x.com/mohd_musaiyab)
+* **LinkedIn**: [Mohd Musaiyab](https://www.linkedin.com/in/mohd-musaiyab/)
+
+---
+
+## 🌐 Personal Website
+
+* **Website**: https://itsmusaiyab.in/
